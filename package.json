@@ -1,0 +1,44 @@
+{
+  "name": "bootstrap-webpack-mult",
+  "version": "1.0.0",
+  "description": "- vscode自身   + Alt: menu toggle   + Ctrl+B: sideBar toggle   + Ctrl+P: 选择打开文件   + Ctrl+Shift+P:弹出输入框,输入目标action,操作更复杂的动作",
+  "main": "webpack.config.js",
+  "scripts": {
+    "dev:mpa": "NODE_ENV=development webpack --config webpack.config.js",
+    "dev:spa": "NODE_ENV=development webpack-dashboard -- webpack --config webpack.config.spa.js",
+    "start": "NODE_ENV=development webpack serve  --config webpack.config.mpa.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "build-notify-webpack-plugin": "^1.0.1",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "css-loader": "^5.2.6",
+    "cssnano": "^5.0.6",
+    "cssnano-preset-advanced": "^5.1.3",
+    "express": "^4.17.1",
+    "glob-all": "^3.2.1",
+    "html-webpack-plugin": "^5.3.2",
+    "mini-css-extract-plugin": "^2.0.0",
+    "node-env": "^0.1.6",
+    "optimize-css-assets-webpack-plugin": "^6.0.1",
+    "postcss": "^8.3.5",
+    "postcss-loader": "^6.1.1",
+    "progress-bar-webpack-plugin": "^2.1.0",
+    "purgecss-webpack-plugin": "^4.0.3",
+    "speed-measure-webpack-plugin": "^1.5.0",
+    "style-loader": "^3.0.0",
+    "webpack": "^5.41.1",
+    "webpack-cli": "^4.7.2",
+    "webpack-dashboard": "^3.3.3",
+    "webpack-deep-scope-analysis": "^1.5.4",
+    "webpack-dev-middleware": "^5.0.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "bootstrap": "^4.6.0",
+    "lodash-es": "^4.17.21"
+  }
+}
