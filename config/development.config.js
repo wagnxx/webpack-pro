@@ -7,6 +7,7 @@ const PurgecssPlugin = require('purgecss-webpack-plugin');
 const { PUBLIC_PATH } = require('./const');
 
 const configs = {
+  devtool: "source-map" ,
   output: {
     path: __dirname + '/../dist/',
     filename: 'js/[name].[contenthash:4].js',
@@ -15,6 +16,17 @@ const configs = {
 
   module: {
     rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+            loader: 'babel-loader',
+            options: {
+                // presets: ['@babel/preset-env', '@babel/preset-react']
+                presets: ['latest','@babel/preset-react']
+            }
+        }
+    },
       {
         test: /\.css$/,
         use: [
@@ -63,6 +75,7 @@ const configs = {
     port: 9000,
     open: true,
     overlay: true,
+    inline:true,
     stats: 'errors-only'
   }
 };

@@ -14,6 +14,13 @@ const defaultConfig = {
     ...entries
   },
 
+  resolve: {
+    // 要解析的文件的扩展名
+    extensions: ['.js', '.jsx', '.json'],
+    // 解析目录时要使用的文件名
+    mainFiles: ['index']
+  },
+
   plugins: [
     new webpack.ProgressPlugin(),
     new ProgressBarPlugin(),

@@ -1,63 +1,64 @@
 const glob = require('glob');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const chalk = require('chalk');
 
 const js = glob.sync('src/pages/**/*.js');
 const html = glob.sync('src/pages/**/*.html');
 
-const entries = {};
-let htmlmPlugins = {};
+const entriesMap = {};
+let htmlmPluginsMap = {};
+
 js.forEach((item) => {
   item.match(/^([\w\/]+)\/([\w\.\-]+)\.js/);
   let parrentPath = RegExp.$1;
   let entryName = RegExp.$2;
-  // console.log(RegExp.$1, RegExp.$2);
-  const pa = parrentPath.split('/');
-  const folderName = pa[pa.length - 1];
-  const key = folderName + '-' + entryName;
+  const parrentPathToArray = parrentPath.split('/');
+  const parrentFolderName = parrentPathToArray[parrentPathToArray.length - 1];
+  const key = parrentFolderName + '-' + entryName;
 
-  entries[key] = resolvePath(item);
+  entriesMap[key] = resolvePath(item);
 
-  const isHomeIndex = folderName === 'home' && entryName === 'index';
+  const isHomeIndex = parrentFolderName === 'home' && entryName === 'index';
+  let _searchtempPath = parrentPath + '/' + entryName + '.html';
+  let _newKey = key.replace('.template', '');
+  let _template = 'public/index.html'; //默认公共模块
 
-  if (entryName.indexOf('.template') > -1) {
-    let _newKey = key.replace('.template', '');
-    if (entries[_newKey]) {
-      console.error(item + '文件已经存在了，请更名');
-      _newKey = key;
-    }
-    htmlmPlugins[key] = {
-      chunk: _newKey,
-      isHomeIndex: isHomeIndex,
-      template: 'public/index.html' //默认公共模块
-    }; // 选公共模块
-  } else {
-    let _tempPath = parrentPath + '/' + entryName + '.html';
-    if (html.includes(_tempPath)) {
-      htmlmPlugins[key] = {
-        chunk: key,
-        isHomeIndex: isHomeIndex,
-        template: _tempPath
-      };
-    }
-    // console.log('用template的文',entryName)
+  if (entriesMap[_newKey] && item.indexOf('.template.') > -1) {
+    dealLog(item);
+    _newKey = key;
   }
+
+  if (html.includes(_searchtempPath)) {
+    _template = _searchtempPath;
+  }
+
+  htmlmPluginsMap[key] = {
+    chunk: _newKey,
+    isHomeIndex: isHomeIndex,
+    template: _template
+  };
 });
 
-const htmlPluginCompose = Object.values(htmlmPlugins).map((item) => {
-  const filename = item.isHomeIndex ? 'index.html' : item.chunk + '.html';
+function dealLog(item) {
+  const warning = chalk.keyword('orange');
+  console.log(warning('!!!!!!!!!!!!!!'));
+  throw new Error(item + '文件已经存在了，请更名');
+}
 
-  return new HtmlWebpackPlugin({
-    template: item.template,
-    filename: filename,
-    inject: 'body',
-    chunks: [item.chunk]
-  });
-});
+const htmlPluginCompose = Object.values(htmlmPluginsMap).map(
+  (item) =>
+    new HtmlWebpackPlugin({
+      template: item.template,
+      filename: item.isHomeIndex ? 'index.html' : item.chunk + '.html',
+      inject: 'body',
+      chunks: [item.chunk]
+    })
+);
 
 module.exports = {
   getEntries() {
-    return entries;
+    return entriesMap;
   },
   getHtmlPlugins() {
     return htmlPluginCompose;

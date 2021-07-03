@@ -3,8 +3,9 @@
  *  this is the index.js
  * 
  */
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './App'
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'bootstrap/dist/css/bootstrap-grid.css';
-// import 'bootstrap/dist/css/bootstrap-reboot.css';
-// // import 'bootstrap/dist/css/bootstrap.reboot.css';
- console.log('welcom !')
+
+ReactDOM.render(<App></App>,document.getElementById('root'))

@@ -1,1 +1,0 @@
-console.log('sub2 template js')

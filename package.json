@@ -1,16 +1,28 @@
 {
-  "name": "bootstrap-webpack-mult",
+  "name": "bootstrap-mult-page",
   "version": "1.0.0",
   "description": "- vscode自身   + Alt: menu toggle   + Ctrl+B: sideBar toggle   + Ctrl+P: 选择打开文件   + Ctrl+Shift+P:弹出输入框,输入目标action,操作更复杂的动作",
-  "main": "webpack.config.js",
-  "scripts": {
-    "dev:mpa": "NODE_ENV=development webpack --config webpack.config.js",
-    "start": "NODE_ENV=development webpack serve  --config webpack.config.js"
+  "main": "postcss.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wagnxx/webpack-pro.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wagnxx/webpack-pro/issues"
+  },
+  "homepage": "https://github.com/wagnxx/webpack-pro#readme",
+  "scripts": {
+    "dev": "NODE_ENV=development webpack --config webpack.config.js",
+    "start": "NODE_ENV=development webpack serve  --inline --config webpack.config.js"
+  },
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-react": "^7.14.5",
+    "babel-loader": "^8.2.2",
+    "babel-preset-latest": "^6.24.1",
     "build-notify-webpack-plugin": "^1.0.1",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "css-loader": "^5.2.6",
@@ -37,7 +49,10 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.14.7",
     "bootstrap": "^4.6.0",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }

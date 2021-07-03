@@ -1,106 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
-  </head>
-  <style>
-    .col {
-      /* border: 1px solid #ddd; */
-      box-sizing: border-box;
-    }
-    .top {
-      height: 200px;
-      background-color: #343b42;
-    }
- 
-    .-mt-60 {
-      margin-top: -60px;
-    }
-  </style>
-  <body>
-    <header></header>
-
-    <main>
-      <section class="container top pt-4">
-        <h1 class="text-center text-white">
-          最优质的时间管理,欢迎您的到来
-        </h1>
-        <nav class="nav">
-          <a class="nav-link active" href="#">Active</a>
-          <a class="nav-link" href="#">Link</a>
-          <a class="nav-link" href="#">Link</a>
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </nav>
-      </section>
-      <!-- Start Container -->
-      <section class="section container -mt-60">
-        <div class="row row-no-gutters container-box"></div>
-      </section>
-      <!-- End Container -->
-      <section>
-        <div class="row mt-3">
-          <div class="col">
-            <nav aria-label="Page navigation example">
-              <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                  <a
-                    class="page-link"
-                    href="#"
-                    tabindex="-1"
-                    aria-disabled="true"
-                    >Previous</a
-                  >
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#">Next</a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <div class="container">
-        <div class="row justify-content-center align-items-center" style="height: 100px">
-          <div class="col">
-            <div class="copyright text-right">© 2021 Bootstrap 优站精选</div>
-          </div>
-          <div class="col">
-            <ul class="nav">
-              <li class="nav-item">关于我们</li>
-              <li class="nav-item">广告合作</li>
-              <li class="nav-item">已署名ICp</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </footer>
-    <script>
-      const boxRow = document.getElementsByClassName('container-box');
-      var _html = '';
-      for (var i = 0; i < 20; i++) {
-        var itemStr = `
-      <div class="col col-12  col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-20 p-1">
-            <div class="card" >
-              <div class="card-body">
-                <h5 class="card-title">Card title ${i}</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere ${i}</a>
-              </div>
-            </div>
-          </div>
-      `;
-        _html += itemStr;
-      }
-      boxRow[0].innerHTML = _html;
-    </script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>App </title>
+</head>
+<body>
+  <div id="root"></div>
+</body>
 </html>
