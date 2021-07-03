@@ -5,9 +5,10 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const PurgecssPlugin = require('purgecss-webpack-plugin');
 const { PUBLIC_PATH } = require('./const');
+const server = require('./server');
 
 const configs = {
-  devtool: "source-map" ,
+  devtool: 'source-map',
   output: {
     path: __dirname + '/../dist/',
     filename: 'js/[name].[contenthash:4].js',
@@ -20,13 +21,24 @@ const configs = {
         test: /\.(js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
         use: {
-            loader: 'babel-loader',
-            options: {
-                // presets: ['@babel/preset-env', '@babel/preset-react']
-                presets: ['latest','@babel/preset-react']
-            }
+          loader: 'babel-loader',
+          options: {
+            plugins: ['transform-object-rest-spread'],
+            presets: [
+              // '@babel/preset-env',
+              '@babel/preset-react',
+              [
+                '@babel/preset-env',
+                {
+                  targets: {
+                    browsers: ['last 2 chrome versions']
+                  }
+                }
+              ]
+            ]
+          }
         }
-    },
+      },
       {
         test: /\.css$/,
         use: [
@@ -55,7 +67,7 @@ const configs = {
     new MiniCssExtractPlugin({
       filename: 'css/[name]-[contenthash:5].css',
       chunkFilename: '[name]-[contenthash:5].css'
-    }),
+    })
     // new PurgecssPlugin({
     //   paths: glob.sync(
     //     [
@@ -75,7 +87,7 @@ const configs = {
     port: 9000,
     open: true,
     overlay: true,
-    inline:true,
+    inline: true,
     stats: 'errors-only'
   }
 };

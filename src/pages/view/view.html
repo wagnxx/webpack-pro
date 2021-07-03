@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>view html video</title>
+  </head>
+  <body>
+    <div class="container">
+      <h3>view page</h3>
+      <div class="video-box row">
+        <div class="col">
+          <video
+            autoplay
+            muted
+            src=""
+            width="300"
+            height="200"
+            style="border: 1px solid"
+            id="local"
+          ></video>
+        </div>
+        <div class="col">
+          <video
+            autoplay
+            muted
+            src=""
+            width="300"
+            height="200"
+            style="border: 1px solid"
+            id="remote"
+          ></video>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-success" id="start">Start</button>
+        <button class="btn btn-primary" id="call">Call</button>
+        <button class="btn btn-danger" id="hang">Hang</button>
+      </div>
+    </div>
+  </body>
+</html>
