@@ -20,10 +20,15 @@ js.forEach((item) => {
 
   const isHomeIndex = folderName === 'home' && entryName === 'index';
 
-  if (entryName.indexOf('template') > -1) {
+  if (entryName.indexOf('.template') > -1) {
+    let _newKey = key.replace('.template', '');
+    if (entries[_newKey]) {
+      console.error(item + '文件已经存在了，请更名');
+      _newKey = key;
+    }
     htmlmPlugins[key] = {
-      chunk: key,
-      isHomeIndex:isHomeIndex,
+      chunk: _newKey,
+      isHomeIndex: isHomeIndex,
       template: 'public/index.html' //默认公共模块
     }; // 选公共模块
   } else {
@@ -31,7 +36,7 @@ js.forEach((item) => {
     if (html.includes(_tempPath)) {
       htmlmPlugins[key] = {
         chunk: key,
-        isHomeIndex:isHomeIndex,
+        isHomeIndex: isHomeIndex,
         template: _tempPath
       };
     }
@@ -40,9 +45,8 @@ js.forEach((item) => {
 });
 
 const htmlPluginCompose = Object.values(htmlmPlugins).map((item) => {
-
   const filename = item.isHomeIndex ? 'index.html' : item.chunk + '.html';
-  
+
   return new HtmlWebpackPlugin({
     template: item.template,
     filename: filename,

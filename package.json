@@ -5,7 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "dev:mpa": "NODE_ENV=development webpack --config webpack.config.js",
-    "start": "NODE_ENV=development webpack serve  --config webpack.config.mpa.js"
+    "start": "NODE_ENV=development webpack serve  --config webpack.config.js"
   },
   "keywords": [],
   "author": "",

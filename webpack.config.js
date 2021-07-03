@@ -7,13 +7,18 @@ const config = require(`./config/${mode}.config.js`);
 const { getEntries, getHtmlPlugins } = require('./config/utils');
 const entries = getEntries();
 const htmlPluginCompose = getHtmlPlugins();
+var ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
 const defaultConfig = {
   entry: {
     ...entries
   },
 
-  plugins: [new webpack.ProgressPlugin(), ...htmlPluginCompose]
+  plugins: [
+    new webpack.ProgressPlugin(),
+    new ProgressBarPlugin(),
+    ...htmlPluginCompose
+  ]
 };
 
 module.exports = merge(config, defaultConfig);

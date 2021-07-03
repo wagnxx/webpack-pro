@@ -9,7 +9,7 @@ const { PUBLIC_PATH } = require('./const');
 const configs = {
   output: {
     path: __dirname + '/../dist/',
-    filename: 'js/[name].[contenthash:4].bundle.js',
+    filename: 'js/[name].[contenthash:4].js',
     publicPath: PUBLIC_PATH
   },
 
@@ -41,22 +41,22 @@ const configs = {
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'css/[name]-[hash:5].css',
-      chunkFilename: '[name]-[hash:5].css'
+      filename: 'css/[name]-[contenthash:5].css',
+      chunkFilename: '[name]-[contenthash:5].css'
     }),
-    new PurgecssPlugin({
-      paths: glob.sync(
-        [
-          `${path.resolve(__dirname, '..', 'src')}/**/*`
-          // 'src/**/*'
-          // path.resolve(__dirname, 'node_modules/jquery/dist/jquery.slim.js'),
-          // path.resolve(__dirname,'..', 'node_modules/bootstrap/dist/js/bootstrap.bundle.js'),
-        ],
-        {
-          nodir: true
-        }
-      )
-    })
+    // new PurgecssPlugin({
+    //   paths: glob.sync(
+    //     [
+    //       `${path.resolve(__dirname, '..', 'src')}/**/*`
+    //       // 'src/**/*'
+    //       // path.resolve(__dirname, 'node_modules/jquery/dist/jquery.slim.js'),
+    //       // path.resolve(__dirname,'..', 'node_modules/bootstrap/dist/js/bootstrap.bundle.js'),
+    //     ],
+    //     {
+    //       nodir: true
+    //     }
+    //   )
+    // })
   ],
   devServer: {
     contentBase: '../dist',

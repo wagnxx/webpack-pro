@@ -10,5 +10,21 @@ module.exports = {
     //   paths: glob.sync(`../dist/*.html`,  { nodir: true }),
     // }),
   ],
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          chunks: 'initial',
+          name: 'common',
+          minChunks: 1,
+          maxInitialRequests: 5,
+          minSize: 0
+        }
+      }
+    },
+    runtimeChunk: {
+      name: 'runtime'
+    }
+  },
   mode: 'production'
 };
