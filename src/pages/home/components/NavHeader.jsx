@@ -12,7 +12,7 @@ export default function NavHeader({ onKeySelected, navData, activeKey }) {
           navData.map(item =>
             (
               <Nav.Item key={item.key}>
-                <Nav.Link eventKey={item.key}>{item.text}</Nav.Link>
+                <Nav.Link href={item.link} eventKey={item.key}>{item.text}</Nav.Link>
               </Nav.Item>
             )
 

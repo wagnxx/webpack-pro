@@ -1,6 +1,12 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const app = express();
-const server = require('http').createServer(app);
+
+const key = fs.readFileSync(path.join(__dirname, '/../cert', 'private.key'));
+const cert = fs.readFileSync(path.join(__dirname, '/../cert', 'mydomain.crt'));
+
+const server = require('https').createServer({ key, cert },app);
 const socket = require('socket.io');
 
 const io = socket(server, {
@@ -16,9 +22,12 @@ const socketToRoom = {};
 
 io.on('connection', (socket) => {
   console.log('user connection id ==> ', socket.id);
+
+  socket.send(undefined);
+
   socket.on('join-room', (roomId) => {
     socket.join(roomId);
-    console.log(`joined ${roomId} room`)
+    console.log(`joined ${roomId} room`);
     if (users[roomId]) {
       const length = users[roomId].length;
       if (length >= 4) {
@@ -29,11 +38,15 @@ io.on('connection', (socket) => {
     } else {
       users[roomId] = [socket.id];
     }
-
+    
     socketToRoom[socket.id] = roomId;
-
+    
     const userInThisRoom = users[roomId].filter((id) => id !== socket.id);
     socket.emit('all-users', userInThisRoom);
+    socket.emit('member-acount', users[roomId].length)
+    socket.broadcast.to(roomId).emit('member-acount', users[roomId].length)
+
+
   });
   // socket.broadcast.to(roomId).emit('user-connected', userId);
   socket.on('sending-signal', (payload) => {
@@ -52,14 +65,17 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     // socket.broadcast.to(roomId).emit('user-desconnented', userId);
-    console.log('user will disconnect',socket.id)
+    console.log('user will disconnect', socket.id);
     const roomId = socketToRoom[socket.id];
     let room = users[roomId];
     if (room) {
       room = room.filter((id) => id !== socket.id);
       users[roomId] = room;
+
+      const length = room.length;
+      socket.broadcast.to(roomId).emit('member-acount',length)
     }
-    socket.broadcast.to(roomId).emit('user-disconnect',socket.id)
+    socket.broadcast.to(roomId).emit('user-disconnect', socket.id);
   });
 });
 

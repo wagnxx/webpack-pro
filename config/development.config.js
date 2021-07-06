@@ -1,5 +1,6 @@
 const path = require('path');
 const glob = require('glob-all');
+const fs = require('fs');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -84,11 +85,16 @@ const configs = {
   ],
   devServer: {
     contentBase: '../dist',
+    host:'0.0.0.0',
     port: 9000,
     open: true,
     overlay: true,
     inline: true,
-    stats: 'errors-only'
+    stats: 'errors-only',
+    https: {
+      key: fs.readFileSync('cert/private.key'),
+      cert: fs.readFileSync('cert/mydomain.crt')
+  }
   }
 };
 configs.mode = 'development';

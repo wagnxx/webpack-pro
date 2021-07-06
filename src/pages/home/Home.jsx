@@ -1,27 +1,41 @@
-import React from 'react'
-import { Tabs, Tab } from "react-bootstrap";
+import React, { useState } from 'react'
+import {Container } from "react-bootstrap";
 import PeerConnection from './components/PeerConnection';
+import NavHeader from "./components/NavHeader";
+import menus from "../../config/menus";
 
- 
 export default function Home() {
+  const [navData, setNavData] = useState(() => {
+    return menus.map(item => {
+      item.link = item.link.replace('/#', '#');
+      return item;
+    })
+  });
+  const [activeKey, setActiveKey] = useState(() => {
+    let activeItem = menus.find(item => item.actived);
+    if (activeItem) return activeItem.key;
+    return menus[0].key;
+  })
+
+  const onKeySelected = key => {
+    console.log(key)
+    setActiveKey(key)
+  }
+
   return (
 
-    <Tabs defaultActiveKey="peer-many" id="uncontrolled-tab-example">
-      <Tab eventKey="peer-many" title="peer-many">
-        场景： 多人聊天室内
-        <PeerConnection />
-      </Tab>
-      <Tab eventKey="one-to-many" title="one-to-many">
-        <div>场景：主播 ====》 万千粉丝</div>
-      </Tab>
-      <Tab eventKey="many-discuss" title="many-discuss">
-        <div>场景：主持人和几位嘉宾讨论，====》  观众听</div>
-      </Tab>
-      <Tab eventKey="peers-merge" title="peers-merge">
-        <div>把以上几个场景融为一体</div>
-      </Tab>
-    </Tabs>
+    <Container>
+      <NavHeader
+        activeKey={activeKey}
+        navData={navData}
+        onKeySelected={onKeySelected}
+      />
+      {
+        activeKey !== 'peer-many' ? '' :
+          <PeerConnection />
+      }
 
+    </Container>
   )
 }
 

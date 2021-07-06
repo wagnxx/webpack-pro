@@ -5,21 +5,33 @@ import io from 'socket.io-client'
 import Video from '../../../components/Video';
 
 export default function PeerConnection() {
-
+  const [memberAcount, setMemberAcount] = useState(0);
+  const [yourID, setYourID] = useState();
   const [peers, setPeers] = useState([]);
+  const peerRefs = useRef([]);
   const socketRef = useRef();
-  const userVideo = useRef();
-  const peersRef = useRef([]);
+  let userVideo = useRef();
   const userStream = useRef();
-  const roomID = 1;
+  const roomID = 1100;
+
+  const [startOpen, setStartOpen] = useState(false)
 
   const start = () => {
+    setStartOpen(true)
     navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
 
       userVideo.current.srcObject = stream;
       userStream.current = stream;
       socketRef.current.emit('join-room', roomID);
     });
+
+  }
+
+  const stop = () => {
+    userStream.current.getTracks()[0].stop();
+    userVideo = null;
+    setStartOpen(false);
+    socketRef.current.close();
 
   }
 
@@ -33,9 +45,6 @@ export default function PeerConnection() {
       socketRef.current.emit('sending-signal', {
         userToSignal, callerID, signal
       })
-    })
-    peer.on('close', signal => {
-      socketRef.current.emit('disconnect', callerID)
     })
 
     return peer;
@@ -55,85 +64,117 @@ export default function PeerConnection() {
     return peer;
   }
 
-
-
   useEffect(() => {
-    socketRef.current = io.connect('http://localhost:3000');
-  }, [socketRef])
 
-  useEffect(() => {
+    socketRef.current = io.connect('//192.168.1.103:3000');
+    socketRef.current.on('message', s => {
+      if (socketRef.current.id) setYourID(socketRef.current.id);
+    });
+
+
     socketRef.current.on('all-users', users => {
       if (users.length <= 0) return;
-      const peers = [];
+      const _peers = [];
       const stream = userStream.current;
-      debugger
       users.forEach(userID => {
         const peer = createPeer(userID, socketRef.current.id, stream);
-        peersRef.current.push({
+        peerRefs.current.push({
           peerID: userID,
           peer,
-        })
-        peers.push(peer);
+        });
+        _peers.push({
+          peerID: userID,
+          peer,
+        });
       })
-      setPeers(peers);
+      setPeers(_peers);
     })
 
     socketRef.current.on('user-joined', payload => {
       const stream = userStream.current;
       const peer = addPeer(payload.signal, payload.callerID, stream);
-      peersRef.current.push({
-        peerID: payload.callerID,
-        peer,
-      })
-      setPeers(prePeers => [...prePeers, peer]);
+      let _peers;
+      if (peerRefs.current.some(item => item.peerID === payload.callerID)) {
+        let _existPeer = peerRefs.current.find(item => item.peerID === payload.callerID);
+        _existPeer.peer = peer;
+        _peers = peerRefs.current.map(p => p);
+      } else {
+        peerRefs.current.push({ peerID: payload.callerID, peer });
+        _peers = peerRefs.current.map(p => p);
+
+      }
+      setPeers(_peers);
     })
 
     socketRef.current.on("receiving-returned-signal", payload => {
-      const item = peersRef.current.find(p => p.peerID === payload.id);
+      const item = peerRefs.current.find(p => p.peerID === payload.id);
+      if (!item) return
       item.peer.signal(payload.signal);
     })
     socketRef.current.on("user-disconnect", userID => {
-      const peersRefLeaved = peersRef.current.find(current => current.peerID === userID);
-      const inRefsIndex = peersRef.current.indexOf(peersRefLeaved);
-      peersRef.current.splice(inRefsIndex, 1);
-      setPeers(prePeers => {
-        let _peers = [...prePeers];
-        const inPeersIndex = _peers.indexOf(peersRefLeaved);
-        _peers.splice(inPeersIndex, 1);
-        return _peers;
-      })
+      const _peers = peerRefs.current.filter(current => current.peerID !== userID);
+      peerRefs.current = _peers;
+      setPeers(_peers)
     })
 
+    socketRef.current.on('member-acount', n => {
+      setMemberAcount(n)
+    })
 
-  }, [socketRef]);
+    window.peerRefs = peerRefs;
+
+  }, [])
+
 
   return (
-    <Container>
-      <h2>Peer connection page</h2>
-      <Button onClick={start}>Start</Button>
-      <Row>
+    <>
+      <Row className="mb-3">
         <Col>
-          <video
-            ref={userVideo}
-            src="."
-            autoPlay mute="true"
-            width="300"
-            height="220"
-            style={{ border: '1px solid #ddd' }}
-          ></video>
+          YourID:{yourID}
         </Col>
+        <Col>
+          房间人数： {memberAcount}
+        </Col>
+      </Row>
+
+      <Row>
         {
-          peers.map((peer, index) => (
-            <Col key={index}>
+          !startOpen ? <p>
+            还没有聊天室，创建一个
+          <Button block onClick={start}>Start</Button>
+          </p>
+            :
+            <Button block onClick={stop}>Stop</Button>
+
+        }
+      </Row>
+      <Row  className="mt-3">
+      {
+          startOpen &&
+          <Col>
+            <video
+              ref={userVideo}
+              src="."
+              autoPlay mute="true"
+              style={{ border: '1px solid #ddd' ,background:'#000',width:'100%'}}
+            ></video>
+          </Col>
+        }
+      </Row>
+
+      <h2>User list</h2>
+
+      <Row className="mt-3">
+ 
+        {
+          peers.map(({peer}, index) => (
+            <Col key={index} className="col-4">
               <Video peer={peer} />
             </Col>
           ))
         }
       </Row>
 
-      <Row>
-  
-      </Row>
-    </Container>
+    </>
   )
 }

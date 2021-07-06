@@ -5,29 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>view html video</title>
+    <!-- <link rel="stylesheet" href="./css//header.css"> -->
+    <style>
+    video{
+      width: 100%;
+      height: 500px;
+      object-fit: scale-down;
+      background-color: black;
+    }
+    </style>
   </head>
   <body>
     <div class="container">
+      <header>
+        <nav>
+          <ul></ul>
+        </nav>
+      </header>
       <h3>view page</h3>
       <div class="video-box row">
-        <div class="col">
+        <div class="col col-6">
           <video
             autoplay
             muted
             src=""
-            width="300"
-            height="200"
             style="border: 1px solid"
             id="local"
           ></video>
         </div>
-        <div class="col">
+        <div class="col col-6">
           <video
             autoplay
             muted
             src=""
-            width="300"
-            height="200"
             style="border: 1px solid"
             id="remote"
           ></video>

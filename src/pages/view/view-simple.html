@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>view html video</title>
+    <style>
+      .video-box {
+        border: 1px solid #ddd;
+        /* width: max-content; */
+      }
+      video {
+        width: 100%;
+        height: 300px;
+        object-fit: scale-down;
+        background-color: black;
+      }
+      /* .video-initiator{
+        border: 1px solid #f00;
+        overflow: auto;
+      }
+      .video-initiator::-webkit-scrollbar{
+        background-color: black;
+      }
+      .video-initiator::-webkit-scrollbar-button{}
+      .video-initiator::-webkit-scrollbar-track{
+        width: 20px;
+        background-color: red;
+      }
+      .video-initiator::-webkit-scrollbar-track-piece{
+        background-color: chartreuse;
+      }
+      .video-initiator::-webkit-scrollbar-thumb{
+        background-color: cornflowerblue;
+      } */
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <header>
+        <nav>
+          <ul></ul>
+        </nav>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01"
+              >Peer Type</label
+            >
+          </div>
+          <select class="custom-select" id="inputGroupSelect01">
+            <option value="one-one">One-One</option>
+            <option value="many-many" selected>many-Many</option>
+            <option value="one-many">one-Many</option>
+          </select>
+        </div>
+      </header>
+      <h3>view page</h3>
+      <h4 class="row">
+        <div class="col">Your ID: <sub id="yourID"></sub></div>
+        <div class="col">房间人数 <span id="member-acount"></span></div>
+      </h4>
+      <div class="video-box row no-gutters hide" id="one-one">
+        <div class="video-initiator col col-6">
+          <video
+            autoplay
+            muted
+            src=""
+            style="border: 1px solid"
+            id="local"
+          ></video>
+          <div class="row flex justify-content-center align-items-center">
+            <button class="btn btn-success" id="start">Start</button>
+            <span>---</span>
+            <button class="btn btn-danger" id="stop">Stop</button>
+          </div>
+        </div>
+        <!-- <div class="col col-1 bg-secondary">
+          <div class="row flex-column h-100 justify-content-around">
+            <p class="bg-primary"><sub>《== initiator</sub></p>
+            <p class="bg-warning"><sub>Client ==》 </sub></p>
+          </div>
+        </div> -->
+        <div class="col col-6">
+          <video
+            autoplay
+            muted
+            src=""
+            style="border: 1px solid"
+            id="remote"
+          ></video>
+          <div class="row flex justify-content-center align-items-center">
+            <button class="btn btn-primary" id="call">Call</button>
+            <span>---</span>
+            <button class="btn btn-danger" id="hang">Hang</button>
+          </div>
+        </div>
+      </div>
+      <div class="video-box row no-gutters" id="many-many">
+        <div class="video-initiator col col-6">
+          <video
+            autoplay
+            muted
+            src=""
+            style="border: 1px solid"
+            id="local-many"
+          ></video>
+          <div class="row flex justify-content-center align-items-center">
+            <button class="btn btn-success" id="connect">Connect</button>
+            <span>---</span>
+            <button class="btn btn-primary" id="start-btn">Start</button>
+            <span>---</span>
+            <button class="btn btn-danger" id="stop-btn">Stop</button>
+          </div>
+        </div>
+        <!-- <div class="video-initiator col col-6" id="add-box">
+          <video
+            autoplay
+            muted
+            src=""
+            style="border: 1px solid"
+            id="local"
+          ></video>
+        </div> -->
+      </div>
+    </div>
+  </body>
+</html>

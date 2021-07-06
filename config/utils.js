@@ -3,8 +3,8 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const chalk = require('chalk');
 
-const js = glob.sync('src/pages/**/*.js');
-const html = glob.sync('src/pages/**/*.html');
+const js = glob.sync('src/pages/*/*.js');
+const html = glob.sync('src/pages/*/*.html');
 
 const entriesMap = {};
 let htmlmPluginsMap = {};

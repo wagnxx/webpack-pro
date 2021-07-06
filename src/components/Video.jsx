@@ -9,9 +9,11 @@ export default function Video({ peer }) {
     peer.on('stream', stream => {
       ref.current.srcObject = stream;
       ref.current.mute = true;
-      if (ref.current.paused) {
+      ref.current.autoplay = true;
+      ref.current.addEventListener('loadedmetadata', () => {
+        console.log('loadedmetadata play...')
         ref.current.play();
-      }
+      });
     })
 
     return () => {
@@ -21,8 +23,9 @@ export default function Video({ peer }) {
   }, []);
 
   return (
-    <video width="300"
-      height="220" ref={ref}>
+    <video  
+      autoPlay
+      height="220" ref={ref} style={{width:"100%"}}>
 
     </video>
   )
