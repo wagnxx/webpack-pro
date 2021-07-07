@@ -9,6 +9,7 @@ function init() {
   setMenus(menus);
   const selectElement = document.getElementById('inputGroupSelect01');
   selectElement.addEventListener('change', selectChangeHandle);
+  importTargetFile(selectElement.value);
 }
 
 function selectChangeHandle(e) {
