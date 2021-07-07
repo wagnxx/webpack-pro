@@ -3,6 +3,7 @@ import './css/header.css';
 import menus from '../../config/menus';
 
 const types = ['one-one', 'one-many', 'many-many', 'one'];
+const fileCache = {};
 
 function init() {
   setMenus(menus);
@@ -13,19 +14,8 @@ function init() {
 function selectChangeHandle(e) {
   let selectedId = types.find((typ) => typ === this.value);
   let unselecteds = types.filter((typ) => typ !== this.value);
-  
-  /**
-   * 子页，由select option 选择
-   */
-  // import './utils/one-one';
-  // import './utils/many-many';
-  // import './utils/one';
-  // import './utils/one-many';
 
-  import(`./utils/${selectedId}`).then((_) => {
-    const app = _.default;
-    app();
-  });
+  importTargetFile(selectedId);
 
   unselecteds.forEach((id) => {
     const itemElement = document.getElementById(id);
@@ -34,6 +24,24 @@ function selectChangeHandle(e) {
 
   const selectedItemElement = document.getElementById(selectedId);
   selectedItemElement && selectedItemElement.classList.remove('hide');
+}
+
+function importTargetFile(id) {
+  /**
+   * 子页，由select option 选择
+   */
+  // import './utils/one-one';
+  // import './utils/many-many';
+  // import './utils/one';
+  // import './utils/one-many';
+
+  if (fileCache[id]) return;
+
+  import(`./utils/${id}`).then((_) => {
+    fileCache[id] = true;
+    const app = _.default;
+    app();
+  });
 }
 
 function setMenus(menus) {
