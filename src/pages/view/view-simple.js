@@ -1,83 +1,40 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Peer from 'simple-peer';
-import startOneMany from './utils/many-many'
-import menus from '../../config/menus';
 import './css/header.css';
-setMenus(menus);
+import menus from '../../config/menus';
 
-startOneMany();
+const types = ['one-one', 'one-many', 'many-many', 'one'];
 
-document.getElementById('inputGroupSelect01').addEventListener('change', function(e) {
-  console.log(this.value)
-  const types = ['one-one', 'one-many'];
-  let selectedId = types.find(typ => typ === this.value);
-  let unselecteds = types.filter(typ => typ !== this.value);
-  unselecteds.forEach(id => {
-    document.getElementById(id).classList.add('hide')
-  })
-  document.getElementById(selectedId).classList.remove('hide')
-})
-
-
-let loacalVideo = document.getElementById('local');
-let remoteVideo = document.getElementById('remote');
-
-let startBtn = document.getElementById('start');
-let stopBtn = document.getElementById('stop');
-let callBtn = document.getElementById('call');
-let hangBtn = document.getElementById('hang');
-
-startBtn.addEventListener('click', start);
-stopBtn.addEventListener('click', stop);
-callBtn.addEventListener('click', callSimple);
-hangBtn.addEventListener('click', hang);
-
-let loaclStream;
-let pc1;
-let pc2;
-
-async function start(event) {
-  if (loaclStream) return;
-
-  event.preventDefault();
-  try {
-    loaclStream = await navigator.mediaDevices.getUserMedia({ video: true });
-    loacalVideo.srcObject = loaclStream;
-  } catch (error) {
-    console.log('getUsermedia failed');
-  }
+function init() {
+  setMenus(menus);
+  const selectElement = document.getElementById('inputGroupSelect01');
+  selectElement.addEventListener('change', selectChangeHandle);
 }
 
-function hang(event) {
-  if (pc2 && pc2.connected) {
-    pc2 = null;
-    remoteVideo.srcObject = null;
-  }
-}
+function selectChangeHandle(e) {
+  let selectedId = types.find((typ) => typ === this.value);
+  let unselecteds = types.filter((typ) => typ !== this.value);
+  
+  /**
+   * 子页，由select option 选择
+   */
+  // import './utils/one-one';
+  // import './utils/many-many';
+  // import './utils/one';
+  // import './utils/one-many';
 
-function stop(event) {
-  // pc1.close();
-  if (!loaclStream) return;
-
-  loaclStream.getTracks()[0].stop();
-  pc1 = null;
-}
-
-async function callSimple(event) {
-  if (!loaclStream) return;
-  pc1 = new Peer({ initiator: true, stream: loaclStream });
-  pc2 = new Peer({});
-
-  pc1.on('signal', (data) => pc2.signal(data));
-  pc2.on('signal', (data) => pc1.signal(data));
-
-  pc2.on('stream', (stream) => {
-    remoteVideo.srcObject = stream;
-    if (remoteVideo.paused) remoteVideo.play();
+  import(`./utils/${selectedId}`).then((_) => {
+    const app = _.default;
+    app();
   });
+
+  unselecteds.forEach((id) => {
+    const itemElement = document.getElementById(id);
+    itemElement && itemElement.classList.add('hide');
+  });
+
+  const selectedItemElement = document.getElementById(selectedId);
+  selectedItemElement && selectedItemElement.classList.remove('hide');
 }
-
-
 
 function setMenus(menus) {
   let _html = menus
@@ -86,5 +43,7 @@ function setMenus(menus) {
     })
     .join('');
 
-  document.querySelector('header ul') .innerHTML = _html
+  document.querySelector('header ul').innerHTML = _html;
 }
+
+window.addEventListener('load', init);

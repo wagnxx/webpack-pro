@@ -49,7 +49,8 @@
             >
           </div>
           <select class="custom-select" id="inputGroupSelect01">
-            <option value="one-one">One-One</option>
+            <option value="one" >One</option>
+            <option value="one-one" >One-One</option>
             <option value="many-many" selected>many-Many</option>
             <option value="one-many">one-Many</option>
           </select>
@@ -96,7 +97,7 @@
           </div>
         </div>
       </div>
-      <div class="video-box row no-gutters" id="many-many">
+      <div class="video-box row no-gutters " id="many-many">
         <div class="video-initiator col col-6">
           <video
             autoplay
@@ -123,6 +124,21 @@
           ></video>
         </div> -->
       </div>
+      <div  class="video-box row no-gutters hide" id="one">
+        <style>
+          #outgoing {
+            width: 600px;
+            word-wrap: break-word;
+            white-space: normal;
+          }
+        </style>
+        <form id="form">
+          <textarea id="incoming"></textarea>
+          <button type="submit">submit</button>
+        </form>
+        <pre id="outgoing"></pre>
+      </div>
+      <div  class="video-box row no-gutters hide" id="one-many">one - many</div>
     </div>
   </body>
 </html>

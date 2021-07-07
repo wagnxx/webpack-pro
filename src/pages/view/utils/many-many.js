@@ -20,11 +20,9 @@ function init() {
 function stop(e) {
   localStreame.getTracks()[0].stop();
   localSocket.close();
- 
-
 
   memberAccountElement.innerText = '';
-  document.getElementById('yourID').innerText = ''
+  document.getElementById('yourID').innerText = '';
 }
 
 async function startOpen(e) {
@@ -49,23 +47,23 @@ function socketEvents(socket) {
     users.forEach((userID) => {
       const peer = createPeer(userID, socket.id, localStreame);
       peerList[userID] = peer;
-      addVideoToBox(peer,userID);
+      addVideoToBox(peer, userID);
     });
   });
 
   socket.on('user-joined', ({ signal, callerID }) => {
     const peer = addPeer(signal, callerID, localStreame);
     peerList[callerID] = peer;
-    addVideoToBox(peer,callerID);
+    addVideoToBox(peer, callerID);
   });
 
   socket.on('receiving-returned-signal', (payload) => {
     peerList[payload.id].signal(payload.signal);
   });
-  socket.on('member-acount', n => {
+  socket.on('member-acount', (n) => {
     memberAccountElement.innerText = n;
-  })
-  socket.on('user-disconnect', removeVideById)
+  });
+  socket.on('user-disconnect', removeVideById);
 }
 
 function addPeer(incommingSignal, callerID, stream) {
@@ -75,12 +73,10 @@ function addPeer(incommingSignal, callerID, stream) {
     stream
   });
   peer.on('signal', (signal) => {
-    localSocket.emit('returning-signal', { signal,callerID });
+    localSocket.emit('returning-signal', { signal, callerID });
   });
   peer.signal(incommingSignal);
-
-  
-
+  peer.on('close', () => peer.removeAllListeners('close'));
   return peer;
 }
 function createPeer(userToSignal, callerID, stream) {
@@ -93,6 +89,8 @@ function createPeer(userToSignal, callerID, stream) {
     localSocket.emit('sending-signal', { userToSignal, callerID, signal });
   });
 
+  peer.on('close', () => peer.removeAllListeners('close'));
+
   // addVideoToBox(peer);
 
   return peer;
@@ -100,13 +98,13 @@ function createPeer(userToSignal, callerID, stream) {
 function removeVideById(id) {
   let elm = document.getElementById(id);
   elm.remove();
-  let peer = peerList[id]
+  let peer = peerList[id];
   if (peer) {
-    // peer.removeStream(localStreame)
-    peer.destroy()
+    console.log('should destroyed',peer)
+    peer.removeStream(localStreame)
   }
 }
-function addVideoToBox(peer,id) {
+function addVideoToBox(peer, id) {
   const divElement = document.createElement('div');
   const videoElement = document.createElement('video');
   divElement.class = 'video-initiator col col-3';
@@ -121,7 +119,6 @@ function addVideoToBox(peer,id) {
   videoBox.appendChild(divElement);
 
   peer.on('stream', (stream) => {
-
     videoElement.srcObject = stream;
     // videoElement.addEventListener('loadedmetadata', () => {
     //   videoElement.play();
@@ -130,13 +127,16 @@ function addVideoToBox(peer,id) {
 }
 
 function start() {
-  window.onload = function () {
-    document.getElementById('connect').onclick = function () {
-      localSocket = io.connect('//192.168.1.103:3000');
-      socketEvents(localSocket);
-    };
-    init();
+  document.getElementById('connect').onclick = function () {
+    localSocket = io.connect('//192.168.1.103:3000');
+    socketEvents(localSocket);
   };
+  init();
 }
 
-export default start;
+
+
+export default function app() {
+  // window.addEventListener('load', start);
+  start()
+}
