@@ -93,16 +93,13 @@ export default function PeerConnection() {
     socketRef.current.on('user-joined', payload => {
       const stream = userStream.current;
       const peer = addPeer(payload.signal, payload.callerID, stream);
-      let _peers;
       if (peerRefs.current.some(item => item.peerID === payload.callerID)) {
         let _existPeer = peerRefs.current.find(item => item.peerID === payload.callerID);
         _existPeer.peer = peer;
-        _peers = peerRefs.current.map(p => p);
       } else {
         peerRefs.current.push({ peerID: payload.callerID, peer });
-        _peers = peerRefs.current.map(p => p);
-
       }
+      let _peers = peerRefs.current.map(p => p);
       setPeers(_peers);
     })
 
@@ -141,10 +138,10 @@ export default function PeerConnection() {
         {
           !startOpen ? <p>
             还没有聊天室，创建一个
-          <Button block onClick={start}>Start</Button>
+          <Button block onClick={start} className="btn-primary">Start</Button>
           </p>
             :
-            <Button block onClick={stop}>Stop</Button>
+            <Button block onClick={stop} className="btn-danger">Stop</Button>
 
         }
       </Row>
