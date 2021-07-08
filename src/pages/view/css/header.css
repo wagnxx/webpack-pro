@@ -1,9 +1,4 @@
-header nav ul {
-  display: flex;
-  list-style: none;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
+
 
 .hide{
   display: none;

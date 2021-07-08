@@ -7,12 +7,14 @@
     <title>view html video</title>
     <style>
       .video-box {
-        border: 1px solid #ddd;
+        /* border: 1px solid #ddd; */
+        padding: 0;
         /* width: max-content; */
       }
       video {
         width: 100%;
-        height: 300px;
+        box-sizing: border-box;
+        /* height: 300px; */
         object-fit: scale-down;
         background-color: black;
       }
@@ -37,12 +39,12 @@
     </style>
   </head>
   <body>
-    <div class="container-fluid">
+    <div class="container">
       <header>
-        <nav>
-          <ul></ul>
+        <nav class="nav-pills flex-column flex-sm-row justify-content-start row mt-3 mb-3" id="menu-list">
         </nav>
-        <div class="input-group mb-3">
+        <h3>view page</h3>
+        <div class="input-group mb-3  mt-3">
           <div class="input-group-prepend">
             <label class="input-group-text" for="inputGroupSelect01"
               >Peer Type</label
@@ -56,11 +58,11 @@
           </select>
         </div>
       </header>
-      <h3>view page</h3>
-      <h4 class="row">
-        <div class="col">Your ID: <sub id="yourID"></sub></div>
-        <div class="col">房间人数 <span id="member-acount"></span></div>
-      </h4>
+      <ul class=" list-group mb-3  mt-3">
+        <li class="list-group-item list-group-item-info">Room ID: <span id="roomID"></span></li>
+        <li class="list-group-item list-group-item-info">Your ID: <span id="yourID"></span></li>
+        <li class="list-group-item list-group-item-info">房间人数: <span id="member-acount"></span></li>
+      </ul>
       <div class="video-box row no-gutters hide" id="one-one">
         <div class="video-initiator col col-6">
           <video
@@ -138,7 +140,26 @@
         </form>
         <pre id="outgoing"></pre>
       </div>
-      <div  class="video-box row no-gutters" id="one-many">one - many</div>
+      <div  class="video-box" id="one-many">
+        <div class="row no-gutters mt-3">
+          <video src="."  id="video-one-many"></video>
+        </div>
+        
+        <div class="row flex  no-gutters align-items-center mt-3" id="remote-end">
+          <button class="btn btn-success"  id="create-room">Create Room</button>
+          <span>---</span>
+          <button class="btn btn-primary" id="start-btn-one-many">Start</button>
+          <span>---</span>
+          <button class="btn btn-danger" id="stop-btn-one-many">Stop</button>
+        </div>
+
+        <div class="row flex  no-gutters align-items-center mt-3" id="client-end">
+          <button class="btn btn-primary" id="call-btn-one-many">call</button>
+          <span>---</span>
+          <button class="btn btn-danger" id="hang-btn-one-many">hang</button>
+        </div>
+
+      </div>
     </div>
   </body>
 </html>

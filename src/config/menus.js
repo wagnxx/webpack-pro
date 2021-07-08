@@ -1,5 +1,5 @@
 const menus = [
-  {key:'peer-many',text:'peer-many',link:'/#',actived:true},
+  {key:'peer-many',text:'peer-many',link:'/#'},
   {key:'one-to-many',text:'one-to-many',link:'/#'},
   {key:'many-discuss',text:'many-discuss',link:'/#'},
   {key:'peers-merge',text:'peers-merge',link:'/#'},

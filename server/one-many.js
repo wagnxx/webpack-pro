@@ -1,12 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
+const wrtc = require('wrtc');
+const Peer = require('simple-peer');
 const app = express();
 
 const httpsOptions = {
   key: fs.readFileSync(path.join(__dirname, '/../cert', 'private.key')),
   cert: fs.readFileSync(path.join(__dirname, '/../cert', 'mydomain.crt'))
 };
+let senderPeer;
+let senderStream;
 
 const server = require('https').createServer(httpsOptions, app);
 const socket = require('socket.io');
@@ -27,7 +31,19 @@ io.on('connection', (socket) => {
 
   socket.send(socket.id);
 
+  socket.emit('room-list', Object.keys(users));
 
+  socket.on('create-room', () => {
+    if (users[socket.id]) {
+      socket.emit('room-exist', `${socket.id} romm is exist`);
+      return;
+    }
+    users[socket.id] = [];
+    socketToRoom[socket.id] = socket.id;
+    socket.emit('create-room-success', socket.id);
+    // create peer
+    senderPeer = new Peer({ initiator: false,trickle:false, wrtc: wrtc });
+  });
 
   socket.on('join-room', (roomId) => {
     socket.join(roomId);
@@ -50,12 +66,35 @@ io.on('connection', (socket) => {
     socket.emit('member-acount', users[roomId].length);
     socket.broadcast.to(roomId).emit('member-acount', users[roomId].length);
   });
+  socket.on('initiatorPeer-created', (data) => {
+    if (socket.id !== socketToRoom[socket.id]) return;
+
+    senderPeer.signal(data);
+    senderPeer.on('signal', (signal) => {
+      socket.emit('answer-initiator', signal);
+      // console.log('signal from local initiator :',signal)
+    });
+
+    senderPeer.on('data', dat => {
+      console.log(dat)
+      console.log('senderPeer.connected',senderPeer.connected)
+    })
+    
+    senderPeer.on('stream', (stream) => {
+      senderStream = stream;
+      console.log('on stream',senderStream.getTracks())
+      // senderPeer.emit('data','stream comming')
+    });
+  });
   // socket.broadcast.to(roomId).emit('user-connected', userId);
   socket.on('sending-signal', (payload) => {
-    io.to(payload.userToSignal).emit('user-joined', {
-      signal: payload.signal,
-      callerID: payload.callerID
-    });
+    if (socket.id === socketToRoom[socket.id]) {
+    } else {
+      io.to(payload.userToSignal).emit('user-joined', {
+        signal: payload.signal,
+        callerID: payload.callerID
+      });
+    }
   });
 
   socket.on('returning-signal', (payload) => {

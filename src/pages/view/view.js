@@ -117,9 +117,10 @@ function getPcName(pc) {
 function setMenus(menus) {
   let _html = menus
     .map((item) => {
-      return `<li key=${item.key}><a href=${item.link}>${item.text}</a></li>`;
+      let active = item.key === 'peer-origin' ? 'active' : '';
+      return `<a href="${item.link}" class="flex-sm-fill text-sm-center nav-link ${active}">${item.text}</a>`;
     })
     .join('');
-  
-  document.querySelector('header ul') .innerHTML = _html
+
+  document.getElementById('menu-list').innerHTML = _html;
 }
