@@ -85,7 +85,7 @@ const configs = {
   ],
   devServer: {
     contentBase: '../dist',
-    host:'0.0.0.0',
+    host: '0.0.0.0',
     port: 9000,
     open: true,
     overlay: true,
@@ -94,7 +94,12 @@ const configs = {
     https: {
       key: fs.readFileSync('cert/private.key'),
       cert: fs.readFileSync('cert/mydomain.crt')
-  }
+    },
+    before(app) {
+      const browserify = require('browserify-middleware');
+      // ...
+      app.get('/js/simple-peer.js', browserify(['simple-peer']));
+    }
   }
 };
 configs.mode = 'development';

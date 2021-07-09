@@ -1,5 +1,5 @@
-import Peer from 'simple-peer';
 import io from 'socket.io-client';
+// const Peer = require('simple-peer')
 
 let createRoomBtn;
 let stopBtn;
@@ -18,6 +18,7 @@ let localStream;
 let localSocket;
 let roomID;
 let localPeer;
+let userPeer;
 
 function init() {
   console.log('========= one many =========');
@@ -68,6 +69,12 @@ function createSocket() {
     console.log('answer', data);
     localPeer.signal(data);
   });
+  localSocket.on('return-user-signal', (data) => {
+    console.log('return-user-signal', data);
+    userPeer.signal(data);
+  });
+
+
 }
 function setBtnDisabled(isRomote, createRoomSuccess) {
   if (isRomote) {
@@ -94,6 +101,45 @@ function computeDom() {
   createRoomBtn.addEventListener('click', createRoom);
   openBtn.addEventListener('click', openHandle);
   stopBtn.addEventListener('click', stopHandle);
+
+  callBtn.addEventListener('click', callHandle);
+  hangBtn.addEventListener('click', hangHandle);
+}
+
+function hangHandle(e) { 
+  e.preventDefault();
+  // localSocket.close();
+  // userPeer.destroy();
+  userPeer.send('close');
+  userPeer.destroy();
+  userPeer.removeAllListeners('close');
+}
+
+function callHandle(e) {
+  e.preventDefault();
+  console.log('call btn clicked !')
+  userPeer = new Peer({initiator:true, trickle: false});
+  localSocket.emit('join-room',{roomId:roomID})
+
+  userPeer.on('signal', signal => {
+    localSocket.emit('user-send-signal',signal)
+  })
+
+  userPeer.on('close', () => {
+    console.log('user closed')
+  })
+
+  userPeer.on('error', err => {
+    console.log('user peer error', err);
+  })
+  
+  userPeer.on('stream', stream => {
+    console.log('user stream is received : ', stream);
+    videoElement.srcObject = stream;
+    videoElement.autoplay = true;
+  })
+
+  window.userPeer = userPeer;
 }
 
 function createRoom(e) {
@@ -105,22 +151,53 @@ async function openHandle(e) {
   localStream = await navigator.mediaDevices.getUserMedia({ video: true });
   videoElement.srcObject = localStream;
   videoElement.autoplay = true;
-  videoElement.height = 300;
+  // videoElement.height = 300;
 
-  localPeer = new Peer({ initiator: true,trickle:false, stream: localStream });
+  localPeer = new Peer({
+    initiator: true,
+    stream: localStream,
+    trickle: false
+  });
   window.localPeer = localPeer;
 
   localPeer.on('signal', (data) => {
     localSocket.emit('initiatorPeer-created', data);
   });
-  localPeer.on('data',dat => console.log(dat))
   // localSocket.emit('initiatorPeer-created')
+  localPeer.on('connect', () => {
+    console.log('server senderPeer is Connected');
+    console.log('peer connected state:', localPeer.connected);
+    // localPeer.send('data of peeer connected');
+    // localPeer.send('connected !!')
+  });
+
+  localPeer.on('close', () => {
+    console.log('senderPeer is closed!');
+    localPeer.destroy();
+  });
+
+  localPeer.on('data', () => {
+    console.log('senderPeer is data!');
+  });
+
+  localPeer.on('error', (err) => {
+    console.log('localPeer Received ERRor　：　', err);
+  });
+
+  // localPeer.addStream(localStream);
+  // localStream.getTracks().forEach(track => localPeer.addTrack(track, localStream));
 
   // USERs
   // call
 }
 
-function stopHandle(e) {}
+function stopHandle(e) {
+  // localPeer.removeStream(localStream);
+  localPeer.send('close');
+  localPeer.destroy();
+  localPeer.removeAllListeners('close');
+  localStream.getTracks()[0].stop();
+}
 
 export default function app() {
   init();
