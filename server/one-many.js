@@ -31,6 +31,8 @@ io.on('connection', (socket) => {
   socket.send(socket.id);
 
   socket.emit('room-list', Object.keys(users));
+  socket.emit('room-created', Object.keys(users).length);
+
 
   socket.on('create-room', () => {
     if (users[socket.id]) {

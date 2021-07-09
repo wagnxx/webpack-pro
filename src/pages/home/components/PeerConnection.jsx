@@ -134,7 +134,7 @@ export default function PeerConnection() {
         </Col>
       </Row>
 
-      <Row>
+      <Row className="no-gutters">
         {
           !startOpen ? <p>
             还没有聊天室，创建一个
@@ -145,7 +145,7 @@ export default function PeerConnection() {
 
         }
       </Row>
-      <Row  className="mt-3">
+      <Row  className="mt-3 no-gutters">
       {
           startOpen &&
           <Col>
@@ -161,7 +161,7 @@ export default function PeerConnection() {
 
       <h2>User list</h2>
 
-      <Row className="mt-3">
+      <Row className="mt-3 no-gutters">
  
         {
           peers.map(({peer}, index) => (

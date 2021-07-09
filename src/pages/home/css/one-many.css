@@ -1,0 +1,6 @@
+video {
+  width:400px;
+  height: 245px;
+  background-color: #000;
+  object-fit: contain;
+}

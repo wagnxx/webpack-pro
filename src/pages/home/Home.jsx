@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import {Container } from "react-bootstrap";
-import PeerConnection from './components/PeerConnection';
+import { Container } from "react-bootstrap";
 import NavHeader from "./components/NavHeader";
 import menus from "../../config/menus";
-
+import PeercreateorByKey from "./components/PeercreateorByKey";
 export default function Home() {
   const [navData, setNavData] = useState(() => {
     return menus.map(item => {
@@ -30,11 +29,7 @@ export default function Home() {
         navData={navData}
         onKeySelected={onKeySelected}
       />
-      {
-        activeKey !== 'peer-many' ? '' :
-          <PeerConnection />
-      }
-
+      <PeercreateorByKey activeKey={activeKey} />
     </Container>
   )
 }
