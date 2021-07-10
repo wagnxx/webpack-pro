@@ -33,7 +33,6 @@ io.on('connection', (socket) => {
   socket.emit('room-list', Object.keys(users));
   socket.emit('room-created', Object.keys(users).length);
 
-
   socket.on('create-room', () => {
     if (users[socket.id]) {
       socket.emit('room-exist', `${socket.id} romm is exist`);
@@ -44,7 +43,13 @@ io.on('connection', (socket) => {
     socket.emit('create-room-success', socket.id);
     io.emit('room-list', Object.keys(users));
     // create peer
-    createSenderPeer(socket);
+    senderPeer = createSenderPeer(socket);
+
+    senderPeer.on('stream', (stream) => {
+      senderStream = stream;
+      console.log('on stream', senderStream.getTracks());
+      // senderPeer.emit('data','stream comming')
+    });
   });
 
   socket.on('join-room', ({ roomId }) => {
@@ -64,12 +69,22 @@ io.on('connection', (socket) => {
     socketToRoom[socket.id] = roomId;
 
     const userInThisRoom = users[roomId].filter((id) => id !== socket.id);
-    socket.emit('all-users', userInThisRoom);
+    io.in(roomId).emit('all-users', users[roomId]);
     io.in(roomId).emit('member-acount', users[roomId].length);
 
     if (socket.id === socketToRoom[socket.id]) return;
     // add user
-    addUerPeer(socket);
+    const peer = addUerPeer(socket);
+    peer.addStream(senderStream);
+    peer.on('close', () => {
+      console.log('user peer closed !');
+      // peer.destroy();
+      console.log('user peer destroy state : ', peer.destroyed);
+      delete peersList[socket.id];
+    });
+
+    peersList[socket.id] = peer;
+
   });
 
   socket.on('initiatorPeer-created', (data) => {

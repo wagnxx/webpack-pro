@@ -14,25 +14,86 @@ export default function OneMany() {
   const [memberIDS, setMemberIDS] = useState([]);
   const [roomCreated, setRoomCreated] = useState(false);
   const socketRef = useRef();
+  const userPeerRef = useRef();
   const initiatorPeerRef = useRef();
+  const loacalStreamRef = useRef();
+  const videoRef = useRef();
 
   const createRoom = e => {
+    if (roomID) return;
     e.preventDefault();
-    socketRef.current.emit('create-room');
+    if (socketRef.current) {
+      socketRef.current.emit('create-room');
+      createInitiatorPeer();
+    }
+
+  }
+
+  const openCamr = async (e) => {
+    if (!roomID) return;
+    e.preventDefault();
+    try {
+      const loacalStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      loacalStreamRef.current = loacalStream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = loacalStream;
+        initiatorPeerRef.current.addStream(loacalStream);
+      }
+
+    } catch (error) {
+      console.log('open camar failed')
+    }
+  }
+  const stopHandle = e => {
+    if (initiatorPeerRef.current.destroyed) return;
+    e.preventDefault();
+    initiatorPeerRef.current.send('close');
+    initiatorPeerRef.current.destroy();
+    loacalStreamRef.current.getTracks()[0].stop()
+    socketRef.current.close();
+
+  }
+
+  const createInitiatorPeer = stream => {
     const initiatorPeer = new Peer({
-      initiator: false,
+      initiator: true,
       trickle: false,
     });
     initiatorPeerRef.current = initiatorPeer;
 
     initiatorPeer.on('signal', signal => {
       socketRef.current.emit('initiatorPeer-created', signal)
+    });
+    initiatorPeer.on('connect', () => {
+      console.log('initiator Peer connected state : ', initiatorPeer.connected)
     })
   }
 
-  const openCamr = e => {
+  const callHandle = e => {
     e.preventDefault();
-    navigator.mediaDevices.getUserMedia({ video: true })
+    const userPeer = new Peer({ initiator: true, trickle: false });
+    socketRef.current.emit('join-room', { roomId: roomID })
+
+    userPeer.on('signal', signal => {
+      socketRef.current.emit('user-send-signal', signal)
+    })
+
+    userPeer.on('close', () => {
+      console.log('user closed')
+    })
+
+    userPeer.on('error', err => {
+      console.log('user peer error', err);
+    })
+
+    userPeer.on('stream', stream => {
+      console.log('user stream is received : ', stream);
+      videoRef.current.srcObject = stream;
+      videoRef.current.autoplay = true;
+    })
+
+    window.userPeer = userPeer;
+    userPeerRef.current = userPeer;
   }
 
   useEffect(() => {
@@ -56,13 +117,21 @@ export default function OneMany() {
     socket.on('answer-initiator', signal => {
       initiatorPeerRef.current.signal(signal);
     });
-    socket.on('user-list', users => {
+    socket.on('all-users', users => {
+      console.log('all suers ', users);
       setMemberIDS(users);
-      setMemberNum(users.length);
-     })
+      // setMemberNum(users.length);
+    })
+    socket.on('return-user-signal', signal => {
+      userPeerRef.current.signal(signal)
+    })
 
     socket.on('message', (id) => {
       setYourID(id)
+    })
+
+    socket.on('member-acount', (n) => {
+      setMemberNum(n);
     })
 
     return () => {
@@ -77,13 +146,13 @@ export default function OneMany() {
           <ListGroup.Item action variant="info">YourID：{yourID}</ListGroup.Item>
           <ListGroup.Item action variant="info">RoomID：{roomID}</ListGroup.Item>
           <ListGroup.Item action variant="info">Members Num：{memberNum}</ListGroup.Item>
-          <ListGroup.Item action variant="info">Members ids：[ {memberIDS} ]</ListGroup.Item>
+          <ListGroup.Item action variant="info">Members ids：[ {memberIDS.join()}]</ListGroup.Item>
         </ListGroup>
 
       </Row>
       <Row className="mt-3 mb-3">
         <Col>
-          <video src="." muted ></video>
+          <video muted autoPlay ref={videoRef}></video>
         </Col>
       </Row>
       <Row className="mt-3 mb-3">
@@ -97,7 +166,7 @@ export default function OneMany() {
                   <Button variant="secondary" onClick={openCamr}>Start</Button>
                 </ButtonGroup>
                 <ButtonGroup className="ml-1" aria-label="group2">
-                  <Button variant="secondary">Stop</Button>
+                  <Button variant="secondary" onClick={stopHandle}>Stop</Button>
                 </ButtonGroup>
               </ButtonToolbar>
             </Col>
@@ -105,7 +174,7 @@ export default function OneMany() {
             <Col>
               <ButtonToolbar>
                 <ButtonGroup aria-label="group1">
-                  <Button >Call</Button>
+                  <Button onClick={callHandle}>Call</Button>
                 </ButtonGroup>
                 <ButtonGroup className="ml-1" aria-label="group2">
                   <Button variant="secondary">Hang</Button>

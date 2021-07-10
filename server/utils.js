@@ -8,9 +8,6 @@ function addUerPeer(socket) {
     objectMode: true,
     wrtc: wrtc
   });
-  peersList[socket.id] = peer;
-
-  peer.addStream(senderStream);
 
   peer.on('data', (dat) => {
     console.log(dat);
@@ -20,11 +17,6 @@ function addUerPeer(socket) {
     }
   });
 
-  peer.on('close', () => {
-    console.log('user peer closed !');
-    // peer.destroy();
-    delete peersList[socket.id];
-  });
   peer.on('error', (err) => {
     console.log('user peer err: ', err.code);
   });
@@ -32,10 +24,12 @@ function addUerPeer(socket) {
   peer.on('signal', (signal) => {
     socket.emit('return-user-signal', signal);
   });
+
+  return peer;
 }
 
 function createSenderPeer(socket) {
-  senderPeer = new Peer({
+  const senderPeer = new Peer({
     initiator: false,
     trickle: false,
     objectMode: true,
@@ -62,16 +56,16 @@ function createSenderPeer(socket) {
 
   senderPeer.on('close', () => {
     console.log('senderPeer is closed!');
+    // senderPeer.destroy();
+    console.log('senderPeer destroyed state :',senderPeer.destroyed)
   });
   senderPeer.on('error', (err) => {
     console.log('sender err: ', err);
   });
 
-  senderPeer.on('stream', (stream) => {
-    senderStream = stream;
-    console.log('on stream', senderStream.getTracks());
-    // senderPeer.emit('data','stream comming')
-  });
+
+
+  return senderPeer;
 }
 
 module.exports = {
