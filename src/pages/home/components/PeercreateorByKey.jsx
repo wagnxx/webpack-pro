@@ -4,16 +4,12 @@ import OneMany from './OneMany';
 
 export default function PeercreateorByKey({ activeKey }) {
 
-  let PeerComponent;
-  switch ('one-to-many') {
+  switch (activeKey) {
     case 'peer-many':
-      PeerComponent = PeerConnection;
-      break;
+      return <PeerConnection />
     case 'one-to-many':
-      PeerComponent = OneMany;
-      break
+      return <OneMany />
+
   }
-  return (
-    <PeerComponent />
-  )
+
 }

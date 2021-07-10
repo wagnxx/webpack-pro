@@ -1,5 +1,6 @@
 import Peer from 'simple-peer';
 import io from 'socket.io-client';
+import CONST from '../../../config/const'
 
 const videoBox = document.getElementById('many-many');
 let loacalVideo = document.getElementById('local-many');
@@ -128,7 +129,7 @@ function addVideoToBox(peer, id) {
 
 function start() {
   document.getElementById('connect').onclick = function () {
-    localSocket = io.connect('//192.168.1.103:3000');
+    localSocket = io.connect(`${CONST.SOCKET_ORIGIN}/many-many`);
     socketEvents(localSocket);
   };
   init();

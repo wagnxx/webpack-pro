@@ -3,7 +3,7 @@ import { Container, Row, Col, Button, Tab } from "react-bootstrap";
 import Peer from "simple-peer";
 import io from 'socket.io-client'
 import Video from '../../../components/Video';
-
+import CONST from '../../../config/const'
 export default function PeerConnection() {
   const [memberAcount, setMemberAcount] = useState(0);
   const [yourID, setYourID] = useState();
@@ -66,7 +66,7 @@ export default function PeerConnection() {
 
   useEffect(() => {
 
-    socketRef.current = io.connect('//192.168.1.103:3000');
+    socketRef.current = io.connect(`${CONST.SOCKET_ORIGIN}/many-many`);
     socketRef.current.on('message', s => {
       if (socketRef.current.id) setYourID(socketRef.current.id);
     });

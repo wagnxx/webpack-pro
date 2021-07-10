@@ -86,6 +86,7 @@ const configs = {
   devServer: {
     contentBase: '../dist',
     host: '0.0.0.0',
+    useLocalIp: true,
     port: 9000,
     open: true,
     overlay: true,

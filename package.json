@@ -17,7 +17,7 @@
   "scripts": {
     "dev": "NODE_ENV=development webpack --config webpack.config.js",
     "start": "NODE_ENV=development webpack serve  --inline --config webpack.config.js",
-    "serverStart": "nodemon ./server/one-many.js"
+    "serverStart": "nodemon ./server/index.js"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",

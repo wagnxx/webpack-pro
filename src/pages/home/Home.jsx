@@ -17,7 +17,6 @@ export default function Home() {
   })
 
   const onKeySelected = key => {
-    console.log(key)
     setActiveKey(key)
   }
 

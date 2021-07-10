@@ -1,33 +1,14 @@
-const fs = require('fs');
-const path = require('path');
-const express = require('express');
-const { addUerPeer, createSenderPeer } = require('./utils');
 
+const { addUerPeer, createSenderPeer } = require('./utils');
 const peersList = {};
 
-const httpsOptions = {
-  key: fs.readFileSync(path.join(__dirname, '/../cert', 'private.key')),
-  cert: fs.readFileSync(path.join(__dirname, '/../cert', 'mydomain.crt'))
-};
 let senderPeer;
 let senderStream;
-
-const app = express();
-const server = require('https').createServer(httpsOptions, app);
-const socket = require('socket.io');
-
-const io = socket(server, {
-  cors: {
-    origin: '*',
-    methods: '*',
-    credentials: true
-  }
-});
 
 const users = {};
 const socketToRoom = {};
 
-io.on('connection', (socket) => {
+module.exports = io => (socket) => {
   socket.send(socket.id);
 
   socket.emit('room-list', Object.keys(users));
@@ -69,8 +50,8 @@ io.on('connection', (socket) => {
     socketToRoom[socket.id] = roomId;
 
     const userInThisRoom = users[roomId].filter((id) => id !== socket.id);
-    io.in(roomId).emit('all-users', users[roomId]);
-    io.in(roomId).emit('member-acount', users[roomId].length);
+    io.of('/one-many').in(roomId).emit('all-users', users[roomId]);
+    io.of('/one-many').in(roomId).emit('member-acount', users[roomId].length);
 
     if (socket.id === socketToRoom[socket.id]) return;
     // add user
@@ -84,7 +65,6 @@ io.on('connection', (socket) => {
     });
 
     peersList[socket.id] = peer;
-
   });
 
   socket.on('initiatorPeer-created', (data) => {
@@ -95,7 +75,6 @@ io.on('connection', (socket) => {
 
   socket.on('user-send-signal', (signal) => {
     const peer = peersList[socket.id];
-
     peer.signal(signal);
   });
 
@@ -117,12 +96,7 @@ io.on('connection', (socket) => {
     if (roomId === socket.id) {
       delete users[roomId];
     }
-    // let peer = peersList[socket.id];
-
-    // peer && peer.destroyed === false && peer.destroy();
 
     socket.broadcast.to(roomId).emit('user-disconnect', socket.id);
   });
-});
-
-server.listen(3000);
+};

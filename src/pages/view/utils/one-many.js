@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 // const Peer = require('simple-peer')
+import CONST from '../../../config/const'
 
 let createRoomBtn;
 let stopBtn;
@@ -27,7 +28,7 @@ function init() {
 }
 
 function createSocket() {
-  localSocket = io.connect('//192.168.1.103:3000');
+  localSocket = io.connect(`${CONST.SOCKET_ORIGIN}/one-many`);
 
   localSocket.on('room-list', (rooms) => {
     console.log('room-list', rooms);

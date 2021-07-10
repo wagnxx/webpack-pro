@@ -5,7 +5,7 @@ import { useRef } from 'react'
 import { useState } from 'react'
 import io from 'socket.io-client'
 import '../css/one-many.css'
-
+import CONST from '../../../config/const'
 export default function OneMany() {
 
   const [yourID, setYourID] = useState('');
@@ -97,7 +97,9 @@ export default function OneMany() {
   }
 
   useEffect(() => {
-    const socket = io.connect('//192.168.1.103:3000');
+
+    const socket = io.connect(`${CONST.SOCKET_ORIGIN}/one-many`);
+
     socketRef.current = socket;
 
     socket.on('room-list', rooms => {
@@ -133,6 +135,8 @@ export default function OneMany() {
     socket.on('member-acount', (n) => {
       setMemberNum(n);
     })
+
+    window.socket = socket;
 
     return () => {
       socket.close();
