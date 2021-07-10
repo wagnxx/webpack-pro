@@ -53,6 +53,14 @@ export default function OneMany() {
     socketRef.current.close();
 
   }
+  const hangHandle = e => {
+    if (userPeerRef.current.destroyed) return;
+    e.preventDefault();
+    userPeerRef.current.send('close');
+    userPeerRef.current.destroy();
+    socketRef.current.close();
+
+  }
 
   const createInitiatorPeer = stream => {
     const initiatorPeer = new Peer({
@@ -181,7 +189,7 @@ export default function OneMany() {
                   <Button onClick={callHandle}>Call</Button>
                 </ButtonGroup>
                 <ButtonGroup className="ml-1" aria-label="group2">
-                  <Button variant="secondary">Hang</Button>
+                  <Button variant="secondary" onClick={hangHandle}>Hang</Button>
                 </ButtonGroup>
               </ButtonToolbar>
             </Col>
