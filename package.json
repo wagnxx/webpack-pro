@@ -16,6 +16,7 @@
   "homepage": "https://github.com/wagnxx/webpack-pro#readme",
   "scripts": {
     "dev": "NODE_ENV=development webpack --config webpack.config.js",
+    "build": "NODE_ENV=production webpack --config webpack.config.js",
     "start": "NODE_ENV=development webpack serve  --inline --config webpack.config.js",
     "serverStart": "nodemon ./server/index.js"
   },

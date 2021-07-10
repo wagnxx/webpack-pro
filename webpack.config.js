@@ -8,6 +8,7 @@ const { getEntries, getHtmlPlugins } = require('./config/utils');
 const entries = getEntries();
 const htmlPluginCompose = getHtmlPlugins();
 var ProgressBarPlugin = require('progress-bar-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const defaultConfig = {
   entry: {
@@ -22,6 +23,7 @@ const defaultConfig = {
   },
 
   plugins: [
+    new CleanWebpackPlugin(),
     new webpack.ProgressPlugin(),
     new ProgressBarPlugin(),
     ...htmlPluginCompose

@@ -64,7 +64,6 @@ const configs = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: 'css/[name]-[contenthash:5].css',
       chunkFilename: '[name]-[contenthash:5].css'
