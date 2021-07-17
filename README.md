@@ -1,3 +1,18 @@
+# 项目说明
+
+该项目主要是通过webpack对mpa的搭建，spa可以忽略，在该项目主要看重项目搭建思路和配置，初始化完后期慢慢弥补
+
+# 项目配置
+webapck.config.js,webpack.config.mpa 为多页
+webpack.config.spa 为单页 （教上面没什么区别，只是多了开发期间的几个插件）
+
+## 项目分支描述
+- main: 初始化简单mpa，spa配置，侧重mpa
+- dev: 在配置好的mpa上简单编码测试
+- dev-jsx: 引入react，使用jsx，jsx和原生js针对webRTC不同场景的混合开发
+
+
+# 其他
 # 关于vscode的快捷键的简单收集
 
 - vscode自身
@@ -34,14 +49,6 @@
 
 ## 在线ｐｓ　好用字体
 －　 source Han serif K
-
-# 项目说明
-
-该项目主要是通过webpack对mpa的搭建，spa可以忽略，在该项目主要看重项目搭建思路和配置，初始化完后期慢慢弥补
-
-# 项目配置
-webapck.config.js,webpack.config.mpa 为多页
-webpack.config.spa 为单页 （教上面没什么区别，只是多了开发期间的几个插件）
 
 ## webpack 常见的插件
 
