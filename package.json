@@ -15,10 +15,11 @@
   },
   "homepage": "https://github.com/wagnxx/webpack-pro#readme",
   "scripts": {
-    "dev": "NODE_ENV=development webpack --config webpack.config.js",
-    "build": "NODE_ENV=production webpack --config webpack.config.js",
-    "start": "NODE_ENV=development webpack serve  --inline --config webpack.config.js",
-    "serverStart": "nodemon ./server/index.js"
+    "client:dev": "scripty",
+    "client:build": "scripty",
+    "client:start": "scripty",
+    "server:tsart": "scripty",
+    "list":"NODE_ENV=development webpack serve  --inline --config webpack.config.js"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
@@ -36,6 +37,7 @@
     "html-webpack-plugin": "^5.3.2",
     "mini-css-extract-plugin": "^2.0.0",
     "node-env": "^0.1.6",
+    "nodemon": "^2.0.12",
     "optimize-css-assets-webpack-plugin": "^6.0.1",
     "postcss": "^8.3.5",
     "postcss-loader": "^6.1.1",
@@ -49,16 +51,20 @@
     "webpack-deep-scope-analysis": "^1.5.4",
     "webpack-dev-middleware": "^5.0.0",
     "webpack-dev-server": "^3.11.2",
-    "webpack-merge": "^5.8.0"
+    "webpack-merge": "^5.8.0",
+    "webpack-watched-glob-entries-plugin": "^2.1.10"
   },
   "dependencies": {
+    "@alan-ai/alan-sdk-web": "^1.8.27",
     "@babel/preset-env": "^7.14.7",
     "bootstrap": "^4.6.0",
     "browserify-middleware": "^8.1.1",
+    "chokidar": "^2.1.8",
     "lodash-es": "^4.17.21",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.1",
     "react-dom": "^17.0.2",
+    "scripty": "^2.0.0",
     "simple-peer": "^9.11.0",
     "socket.io": "^4.1.2",
     "socket.io-client": "^4.1.2",

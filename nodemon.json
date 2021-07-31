@@ -1,0 +1,8 @@
+{
+  "ignore": [
+
+  ],
+  "watch": [
+    "src/page"
+  ]
+}

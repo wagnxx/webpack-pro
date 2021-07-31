@@ -52,15 +52,23 @@ const configs = {
           },
           'css-loader',
           'postcss-loader'
-          // {
-          // loader: 'postcss-loader',
-          // options: {
-          //   plugins:devMode?[require('autoprefixer')]
-          //     :[require('autoprefixer'), require('cssnano')]
-          // }
-          // }
         ]
-      }
+      },
+      {
+        test: /\.less$/,
+        use: [
+          // 'style-loader',
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              // publicPath: '', // 无效
+            }
+          },
+          'css-loader',
+          'postcss-loader',
+          'less-loader'
+        ]
+      },
     ]
   },
   plugins: [
@@ -87,7 +95,7 @@ const configs = {
     host: '0.0.0.0',
     useLocalIp: true,
     port: 9000,
-    open: true,
+    open: false,
     overlay: true,
     inline: true,
     stats: 'errors-only',
