@@ -7,14 +7,15 @@
 
 const webpackDevServer = require('webpack-dev-server');
 const webpack = require('webpack');
-var childProcess = require('child_process');
-var chokidar = require('chokidar');
+const chokidar = require('chokidar');
 const glob = require('glob');
 const cluster = require('cluster');
 
-var watcher = chokidar.watch('src/pages');
+const watcher = chokidar.watch('src/pages');
 
+let log = console.log.bind(console);
 let server = null;
+
 async function startRenderer() {
   const config = require('./webpack.config');
 
@@ -37,21 +38,18 @@ async function startRenderer() {
   if (server == null) {
     server = new webpackDevServer(compiler, options);
   }
-  server.listen(9000, () => {
-    console.log('dev server listening jon port 5000');
-  });
+  server.listen(9000);
 }
-initFiles = glob.sync('src/pages/**');
+let initFiles = glob.sync('src/pages/**');
 
-var log = console.log.bind(console);
 
 function start() {
   if (cluster.isMaster) {
-    console.log(`主进程 ${process.pid} 正在运行`);
+    log(`主进程 ${process.pid} 正在运行`);
     let worker = cluster.fork();
 
     cluster.on('exit', (worker, code, signal) => {
-      console.log(`工作进程 ${worker.process.pid} 已退出`);
+      log(`工作进程 ${worker.process.pid} 已退出`);
       worker = cluster.fork();
     });
 
@@ -67,7 +65,7 @@ function start() {
         if (worker.isDead()) {
           worker = cluster.fork();
         }
-        // dirChanged({ path, type: 'addDir' });
+
         worker.send(JSON.stringify({ path, type: 'addDir' }));
       }
     });
@@ -81,19 +79,17 @@ function start() {
     });
     watcher.on('erro', (error) => log('Error happened', error));
   } else {
-    // 工作进程可以共享任何 TCP 连接。
-    // 在本例子中，共享的是一个 HTTP 服务器。
 
     process.on('message', (msg) => {
       const obj = JSON.parse(msg);
-      console.log('worker received msg : ', obj);
+      log('worker received msg : ', obj);
 
       if (obj.type == 'unlinkDir' || 'addDir' == obj.type) {
         process.kill(process.pid, 'SIGHUP');
       }
     });
 
-    console.log(`工作进程 ${process.pid} 已启动`);
+    log(`工作进程 ${process.pid} 已启动`);
 
     startRenderer();
   }
