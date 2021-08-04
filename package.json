@@ -19,6 +19,7 @@
     "client:build": "scripty",
     "client:start": "scripty",
     "server:tsart": "scripty",
+    "devStart":"NODE_ENV=development node ./server-dev-mult",
     "list":"NODE_ENV=development webpack serve  --inline --config webpack.config.js"
   },
   "devDependencies": {

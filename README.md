@@ -12,6 +12,11 @@ webpack.config.spa 为单页 （教上面没什么区别，只是多了开发期
 - dev-jsx: 引入react，使用jsx，jsx和原生js针对webRTC不同场景的混合开发
 
 
+# 多页开发模式比较
+- 弃用nodemon，nodemon监听是文件modify，而且是只对已经生命的文件有效，进程一旦启动，新增文件无法被监测
+- 改用inotifywait 检测 文件的创建和删除，modify交给webpack自己的watch；（不足：vscode编辑器删除目录文件监听不到）
+- chokidar + clustor 也能满足
+
 # 其他
 
 

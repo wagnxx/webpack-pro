@@ -3,6 +3,6 @@
 
   ],
   "watch": [
-    "src/page"
+    "server-dev-mult.js"
   ]
 }
