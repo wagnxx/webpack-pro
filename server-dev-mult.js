@@ -10,7 +10,7 @@ const webpack = require('webpack');
 const chokidar = require('chokidar');
 const glob = require('glob');
 const cluster = require('cluster');
-
+const process = require('process');
 const watcher = chokidar.watch('src/pages');
 
 let log = console.log.bind(console);
@@ -42,7 +42,6 @@ async function startRenderer() {
 }
 let initFiles = glob.sync('src/pages/**');
 
-
 function start() {
   if (cluster.isMaster) {
     log(`主进程 ${process.pid} 正在运行`);
@@ -50,42 +49,40 @@ function start() {
 
     cluster.on('exit', (worker, code, signal) => {
       log(`工作进程 ${worker.process.pid} 已退出`);
-      worker = cluster.fork();
+      if (code === 0) {
+        console.log('code : 0,restart worker ');
+        worker.destroy();
+        worker = cluster.fork();
+      }
     });
 
-    watcher.on('addDir', (path) => {
-      const isInitialFile = initFiles.includes(path);
-      log(
-        'Directory',
-        path,
-        'has been added,is contained initFiles',
-        isInitialFile
-      );
-      if (!isInitialFile) {
+    watcher
+      .on('addDir', (path) => {
+        const isInitialFile = initFiles.includes(path);
+
+        if (!isInitialFile) {
+          if (worker.isDead()) {
+            worker = cluster.fork();
+          }
+          worker.send(JSON.stringify({ path, type: 'addDir' }));
+        }
+      })
+      .on('unlinkDir', (path) => {
         if (worker.isDead()) {
           worker = cluster.fork();
         }
-
-        worker.send(JSON.stringify({ path, type: 'addDir' }));
-      }
-    });
-    watcher.on('unlinkDir', (path) => {
-      log('Directory', path, 'has been removed');
-      if (worker.isDead()) {
-        worker = cluster.fork();
-      }
-      // dirChanged({ path, type: 'unlinkDir' });
-      worker.send(JSON.stringify({ path, type: 'unlinkDir' }));
-    });
-    watcher.on('erro', (error) => log('Error happened', error));
+        worker.send(JSON.stringify({ path, type: 'unlinkDir' }));
+      })
+      .on('erro', (error) => log('Error happened', error));
   } else {
-
     process.on('message', (msg) => {
       const obj = JSON.parse(msg);
       log('worker received msg : ', obj);
 
       if (obj.type == 'unlinkDir' || 'addDir' == obj.type) {
-        process.kill(process.pid, 'SIGHUP');
+        // process.kill(process.pid, 'SIGHUP');
+        process.exit(0);
+        // return;
       }
     });
 
